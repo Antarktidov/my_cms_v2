@@ -142,6 +142,9 @@ function load_skin() {
     global $my_cms_skin;
     include __DIR__ . "/skins/{$my_cms_skin}/skin.php";
 }
+function load_extension($ext) {
+    include __DIR__ . "/extensions/{$ext}/functions.php";
+}
 function connect_to_db() {
     global $db_host, $db_username, $db_password, $db_name, $conn;
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name);

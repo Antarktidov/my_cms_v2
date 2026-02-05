@@ -10,7 +10,3 @@ $db_password = "";
 $db_name = "my_cms";
 
 $wg_path = "http://localhost/my_cms/";
-
-function load_extension($ext) {
-    include __DIR__ . "/extensions/{$ext}/functions.php";
-}
