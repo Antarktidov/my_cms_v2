@@ -2,7 +2,7 @@
 include __DIR__ . "/go_away.php";
 
 $my_cms_skin = "bootstrap";
-load_extension("comments");
+$my_cms_extensions = ["comments"];
 
 $db_host = "localhost";
 $db_username = "root";

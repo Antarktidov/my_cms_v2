@@ -1,5 +1,31 @@
 <?php
 include __DIR__ . "/go_away.php";
+
+/**
+ * Система хуков — позволяет расширениям подключаться к точкам вызова в ядре
+ */
+$my_cms_hooks = [];
+
+function my_cms_add_hook($hook_name, $callback, $priority = 10) {
+    global $my_cms_hooks;
+    if (!isset($my_cms_hooks[$hook_name])) {
+        $my_cms_hooks[$hook_name] = [];
+    }
+    $my_cms_hooks[$hook_name][] = ['callback' => $callback, 'priority' => (int) $priority];
+}
+
+function my_cms_do_hook($hook_name, $data = null) {
+    global $my_cms_hooks;
+    if (!isset($my_cms_hooks[$hook_name]) || empty($my_cms_hooks[$hook_name])) {
+        return;
+    }
+    $hooks = $my_cms_hooks[$hook_name];
+    usort($hooks, fn($a, $b) => $a['priority'] <=> $b['priority']);
+    foreach ($hooks as $hook) {
+        call_user_func($hook['callback'], $data);
+    }
+}
+
 function my_cms_header() {
     ?>
     <!DOCTYPE html>
@@ -66,7 +92,7 @@ function my_cms_single_blog($slug) {
     
     connect_to_db();
     global $conn;
-    $sql = "SELECT title, text FROM blog WHERE slug='$slug'";
+    $sql = "SELECT id, title, text FROM blog WHERE slug='$slug'";
     $result = $conn->query($sql);
 
     // Process the result set
@@ -77,6 +103,7 @@ function my_cms_single_blog($slug) {
         <h1><?=$row['title'];?></h1>
         <?=$row['text'];?>
         <?php
+        my_cms_do_hook('single_blog_after_content', $row);
     }
     } else if ($result->num_rows === 0) {
         http_response_code(404);

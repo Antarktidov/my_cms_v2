@@ -1,6 +1,10 @@
 <?php
 include __DIR__ . "/../../go_away.php";
 
+my_cms_add_hook('single_blog_after_content', function($blog) {
+    blog_comments($blog['id']);
+});
+
 function blog_comments($blog_id) {
     connect_to_db();
     global $conn;
@@ -10,6 +14,7 @@ function blog_comments($blog_id) {
     // Process the result set
     if ($result->num_rows > 0) {
         // Output data of each row
+        ?><div class="comments"><?php
         while($row = $result->fetch_assoc()) {
             ?>
             <div class="comment">
@@ -17,5 +22,5 @@ function blog_comments($blog_id) {
             </div>
             <?php
         }
-        close_connection_to_db();
+        ?></div><?php
 }}
