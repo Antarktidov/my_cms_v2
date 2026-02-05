@@ -24,26 +24,27 @@ function my_cms_footer() {
 }
 function my_cms_content() {
     $request_uri = $_SERVER['REQUEST_URI'];
-    
-    // Убираем параметры запроса и базовый путь если нужно
+
+    // Убираем параметры запроса
     $parsed_url = parse_url($request_uri);
     $path = $parsed_url['path'] ?? '';
-    
+
     // Убираем начальный и конечный слеши
     $path = trim($path, '/');
-    
-    // Убираем базовый путь (если скрипт находится в поддиректории)
-    $script_path = dirname($_SERVER['SCRIPT_NAME']);
-    if ($script_path !== '/' && strpos($path, $script_path) === 0) {
-        $path = substr($path, strlen(trim($script_path, '/')));
-        $path = trim($path, '/');
+
+    // Учитываем, что сайт может находиться в поддиректории (например /my_cms)
+    $script_dir = trim(dirname($_SERVER['SCRIPT_NAME']), '/'); // my_cms
+    if ($script_dir !== '' && strpos($path, $script_dir) === 0) {
+        // Отрезаем базовую директорию из пути
+        $path = substr($path, strlen($script_dir));
+        $path = ltrim($path, '/');
     }
-    
+
     // Разбиваем путь на части
     $path_parts = $path ? explode('/', $path) : [];
-    
+
     // Простой роутинг
-    if (empty($path_parts) || $path_parts[0] === 'home') {
+    if (empty($path_parts) || $path_parts[0] === '' || $path_parts[0] === 'home' || $path_parts[0] === 'index.php') {
         my_cms_homepage();
     } elseif ($path_parts[0] === 'blog') {
         if (isset($path_parts[1])) {
@@ -63,8 +64,27 @@ function my_cms_single_blog($slug) {
     // Очищаем slug от нежелательных символов
     $slug = htmlspecialchars($slug, ENT_QUOTES, 'UTF-8');
     
-    // Здесь вы можете получить данные блога из базы данных по slug
-    echo "Вы просматриваете блог: " . $slug;
+    connect_to_db();
+    global $conn;
+    $sql = "SELECT title, text FROM blog WHERE slug='$slug'";
+    $result = $conn->query($sql);
+
+    // Process the result set
+    if ($result->num_rows === 1) {
+    // Output data of each row
+    while($row = $result->fetch_assoc()) {
+        ?>
+        <h1><?=$row['title'];?></h1>
+        <?=$row['text'];?>
+        <?php
+    }
+    } else if ($result->num_rows === 0) {
+        http_response_code(404);
+        global $my_cms_skin;
+        include __DIR__ . "/skins/{$my_cms_skin}/404.php";
+    }
+
+    close_connection_to_db();
 }
 function my_cms_homepage() {
     ?>
@@ -82,13 +102,13 @@ function get_html_title() {
     return 'my_cms';
 }
 function get_styles() {
-    global $my_cms_skin;
-    $output = "<link rel=\"stylesheet\" href=\"./skins/{$my_cms_skin}/css/skin.css\">";
+    global $my_cms_skin, $wg_path;
+    $output = "<link rel=\"stylesheet\" href=\"{$wg_path}/skins/{$my_cms_skin}/css/skin.css\">";
     return $output;
 }
 function get_heder_scripts() {
-    global $my_cms_skin;
-    $output = "<script src=\"./skins/{$my_cms_skin}/js/skin.js\" defer></script>";
+    global $my_cms_skin, $wg_path;
+    $output = "<script src=\"{$wg_path}/skins/{$my_cms_skin}/js/skin.js\" defer></script>";
     return $output;
 }
 function load_skin() {
