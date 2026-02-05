@@ -8,8 +8,12 @@ my_cms_add_hook('single_blog_after_content', function($blog) {
 function blog_comments($blog_id) {
     connect_to_db();
     global $conn;
-    $sql = "SELECT text FROM comment WHERE blog_id='$blog_id'";
-    $result = $conn->query($sql);
+    
+    // Подготовка запроса для защиты от SQL-инъекций
+    $stmt = $conn->prepare("SELECT text FROM comment WHERE blog_id = ?");
+    $stmt->bind_param("i", $blog_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     // Process the result set
     if ($result->num_rows > 0) {
@@ -23,4 +27,8 @@ function blog_comments($blog_id) {
             <?php
         }
         ?></div><?php
-}}
+    }
+    
+    // Закрытие подготовленного запроса
+    $stmt->close();
+}

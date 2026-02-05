@@ -92,8 +92,12 @@ function my_cms_single_blog($slug) {
     
     connect_to_db();
     global $conn;
-    $sql = "SELECT id, title, text FROM blog WHERE slug='$slug'";
-    $result = $conn->query($sql);
+    
+    // Подготовка запроса для защиты от SQL-инъекций
+    $stmt = $conn->prepare("SELECT id, title, text FROM blog WHERE slug = ?");
+    $stmt->bind_param("s", $slug);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     // Process the result set
     if ($result->num_rows === 1) {
@@ -110,7 +114,10 @@ function my_cms_single_blog($slug) {
         global $my_cms_skin;
         include __DIR__ . "/skins/{$my_cms_skin}/404.php";
     }
-
+    
+    // Закрытие подготовленного запроса
+    $stmt->close();
+    
     close_connection_to_db();
 }
 function my_cms_homepage() {
