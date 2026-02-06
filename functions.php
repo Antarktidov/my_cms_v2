@@ -127,7 +127,31 @@ function my_cms_homepage() {
     <?php
 }
 function my_cms_blog_page() {
-    echo "Заглушка блога";
+    connect_to_db();
+    global $conn, $wg_path;
+    
+    // Подготовка запроса для защиты от SQL-инъекций
+    $stmt = $conn->prepare("SELECT title, slug, text FROM blog LIMIT 3;");
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Process the result set
+    if ($result->num_rows > 0) {
+    // Output data of each row
+    while($row = $result->fetch_assoc()) {
+        ?>
+        <h1><a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['title'];?></a></h1>
+        <a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['text'];?>
+        <?php
+    }
+    } else if ($result->num_rows === 0) {
+
+    }
+    
+    // Закрытие подготовленного запроса
+    $stmt->close();
+    
+    close_connection_to_db();
 }
 function get_locale() {
     return Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
