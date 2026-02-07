@@ -86,9 +86,7 @@ function my_cms_content() {
             create_blog_page();
         } 
     } else {
-        http_response_code(404);
-        global $my_cms_skin;
-        include __DIR__ . "/skins/{$my_cms_skin}/404.php";
+        my_cms_error_404();
     }
 }
 // Новая функция для отображения конкретного блога
@@ -116,9 +114,7 @@ function my_cms_single_blog($slug) {
         my_cms_do_hook('single_blog_after_content', $row);
     }
     } else if ($result->num_rows === 0) {
-        http_response_code(404);
-        global $my_cms_skin;
-        include __DIR__ . "/skins/{$my_cms_skin}/404.php";
+        my_cms_error_404();
     }
     
     // Закрытие подготовленного запроса
@@ -127,22 +123,33 @@ function my_cms_single_blog($slug) {
     close_connection_to_db();
 }
 
+function my_cms_error_404() {
+    http_response_code(404);
+    global $my_cms_skin;
+    if (file_exists(__DIR__ . "/skins/{$my_cms_skin}/404.php")) {
+        include __DIR__ . "/skins/{$my_cms_skin}/404.php";
+    } else {
+        include __DIR__ . "/404.php";
+    }
+}
+
 function create_blog_page() {
-    if (isset($_POST['blog'])) {
+    if ( isset($_POST['title'])  && isset($_POST['slug']) && isset($_POST['text']) ) {
             $title = $_POST['title'];
-            $slug = $_POST['slug'];
-            $text = $_POST['text'];
+            $slug  = $_POST['slug'];
+            $text  = $_POST['text'];
 
             connect_to_db();
             global $conn;
 
             $stmt = $conn->prepare("INSERT INTO blog (title, slug, text) VALUES (?, ?, ?)");
-            $title = $_POST['title'];
             $stmt->bind_param("sss", $title, $slug, $text);
             $stmt->execute();
             $stmt->close();
-            
+
             close_connection_to_db();
+
+            header('Location: '. $wg_path . "blog/" . $slug);
         }
 }
 

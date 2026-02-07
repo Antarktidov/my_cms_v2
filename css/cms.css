@@ -15,3 +15,20 @@ body {
     font-size: 400px;
     text-align: center;
 }
+form {
+    margin-left: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 20px;
+    width: 25rem;
+    & input,
+    & button {
+        height: 2rem;
+        font-size: 20px;
+    }
+    & textarea {
+        height: 4rem;
+        font-size: 20px;
+    }
+}
