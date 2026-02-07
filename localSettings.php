@@ -1,7 +1,7 @@
 <?php
 include __DIR__ . "/go_away.php";
 
-$my_cms_skin = "darky";
+$my_cms_skin = "example";
 $my_cms_extensions = ["comments"];
 
 $db_host = "localhost";

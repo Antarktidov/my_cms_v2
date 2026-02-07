@@ -15,7 +15,7 @@ body {
     font-size: 400px;
     text-align: center;
 }
-form {
+.create-blog-form {
     margin-left: 2rem;
     display: flex;
     flex-direction: column;

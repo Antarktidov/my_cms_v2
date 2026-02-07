@@ -5,3 +5,18 @@
     display: flex;
     width: 70vw;
 }
+.comment-form {
+    padding: 10px;
+    padding-right: 0;
+    display: flex;
+    margin-right: 0;
+    width: 70vw;
+    & textarea {
+        border: 1px solid;
+        width: 65vw;
+    }
+    & button {
+        position: relative;
+        left: 1.2vw;
+    }
+}
