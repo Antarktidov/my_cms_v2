@@ -140,8 +140,10 @@ function my_cms_blog_page() {
     // Output data of each row
     while($row = $result->fetch_assoc()) {
         ?>
-        <h1><a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['title'];?></a></h1>
-        <a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['text'];?>
+        <div class="blog-wrapper">
+            <h1><a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['title'];?></a></h1>
+            <a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['text'];?>
+        </div>
         <?php
     }
     } else if ($result->num_rows === 0) {
@@ -160,13 +162,28 @@ function get_html_title() {
     return 'my_cms';
 }
 function get_styles() {
-    global $my_cms_skin, $wg_path;
-    $output = "<link rel=\"stylesheet\" href=\"{$wg_path}/skins/{$my_cms_skin}/css/skin.css\">";
+    global $my_cms_skin, $wg_path, $my_cms_extensions;
+    $output = "";
+    #$output .= "<link rel=\"stylesheet\" href=\"{$wg_path}css/cms.css\">";
+    $output .= "<link rel=\"stylesheet\" href=\"{$wg_path}skins/{$my_cms_skin}/css/skin.css\">";
+    foreach ($my_cms_extensions as $ext) {
+        if (file_exists(__DIR__ . "/extensions/{$ext}/css/ext.css")) {
+            $output .= "<link rel=\"stylesheet\" href=\"{$wg_path}extensions/{$ext}/css/ext.css\">";
+        }
+    }
+    $output .= "<link rel=\"stylesheet\" href=\"{$wg_path}css/cms.css\">";
     return $output;
 }
 function get_heder_scripts() {
-    global $my_cms_skin, $wg_path;
-    $output = "<script src=\"{$wg_path}/skins/{$my_cms_skin}/js/skin.js\" defer></script>";
+    global $my_cms_skin, $wg_path, $my_cms_extensions;
+    $output = "";
+    $output .= "<script src=\"{$wg_path}js/cms.js\" defer></script>";
+    $output .= "<script src=\"{$wg_path}skins/{$my_cms_skin}/js/skin.js\" defer></script>";
+    foreach ($my_cms_extensions as $ext) {
+        if (file_exists(__DIR__ . "/extensions/{$ext}/js/ext.js")) {
+            $output .= "<script src=\"{$wg_path}extensions/{$ext}/js/ext.js\" defer></script>";
+        }
+    }
     return $output;
 }
 function load_skin() {
