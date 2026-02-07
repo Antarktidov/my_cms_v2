@@ -142,7 +142,7 @@ function my_cms_blog_page() {
         ?>
         <div class="blog-wrapper">
             <h1><a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['title'];?></a></h1>
-            <a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['text'];?>
+            <a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['text'];?></a>
         </div>
         <?php
     }

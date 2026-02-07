@@ -1,5 +1,5 @@
 body {
-    width: 70vh !important;
+    width: 70vw !important;
     margin: auto;
 }
 .blog-wrapper {
@@ -10,4 +10,8 @@ body {
 .blog-wrapper > a {
     text-decoration: none;
     color: unset;
+}
+.web-code {
+    font-size: 400px;
+    text-align: center;
 }
