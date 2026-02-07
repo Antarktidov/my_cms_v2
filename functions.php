@@ -79,6 +79,12 @@ function my_cms_content() {
         } else {
             my_cms_blog_page();
         }
+    } elseif ($path_parts[0] === 'create_blog') {
+        if ($_SERVER['REQUEST_METHOD'] === "GET") {
+            include __DIR__  . '/create-blog.php';
+        } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
+            create_blog_page();
+        } 
     } else {
         http_response_code(404);
         global $my_cms_skin;
@@ -120,6 +126,26 @@ function my_cms_single_blog($slug) {
     
     close_connection_to_db();
 }
+
+function create_blog_page() {
+    if (isset($_POST['blog'])) {
+            $title = $_POST['title'];
+            $slug = $_POST['slug'];
+            $text = $_POST['text'];
+
+            connect_to_db();
+            global $conn;
+
+            $stmt = $conn->prepare("INSERT INTO blog (title, slug, text) VALUES (?, ?, ?)");
+            $title = $_POST['title'];
+            $stmt->bind_param("sss", $title, $slug, $text);
+            $stmt->execute();
+            $stmt->close();
+            
+            close_connection_to_db();
+        }
+}
+
 function my_cms_homepage() {
     ?>
     <h1>Домашняя страница</h1>
