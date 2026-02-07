@@ -14,7 +14,7 @@ function blog_comments($blog_id) {
     $stmt->bind_param("i", $blog_id);
     $stmt->execute();
     $result = $stmt->get_result();
-
+    echo "<h2>Комментарии:</h2>";
     // Process the result set
     if ($result->num_rows > 0) {
         // Output data of each row
@@ -27,6 +27,8 @@ function blog_comments($blog_id) {
             <?php
         }
         ?></div><?php
+    } else {
+        echo "<p>Комментариев пока нет</p>";
     }
     
     // Закрытие подготовленного запроса
