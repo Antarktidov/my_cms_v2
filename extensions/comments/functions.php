@@ -23,7 +23,7 @@ function blog_comments($blog_id) {
         while($row = $result->fetch_assoc()) {
             ?>
             <div class="comment">
-                <?=$row['text'];?>
+                <?=htmlspecialchars($row['text']);?>
             </div>
             <?php
         }

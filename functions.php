@@ -108,8 +108,8 @@ function my_cms_single_blog($slug) {
     // Output data of each row
     while($row = $result->fetch_assoc()) {
         ?>
-        <h1><?=$row['title'];?></h1>
-        <?=$row['text'];?>
+        <h1><?=htmlspecialchars($row['title']);?></h1>
+        <?=htmlspecialchars($row['text']);?>
         <?php
         my_cms_do_hook('single_blog_after_content', $row);
     }
@@ -174,8 +174,8 @@ function my_cms_blog_page() {
     while($row = $result->fetch_assoc()) {
         ?>
         <div class="blog-wrapper">
-            <h1><a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['title'];?></a></h1>
-            <a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=$row['text'];?></a>
+            <h1><a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=htmlspecialchars($row['title']);?></a></h1>
+            <a href="<?="{$wg_path}blog/{$row['slug']}";?>"><?=htmlspecialchars($row['text']);?></a>
         </div>
         <?php
     }
