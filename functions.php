@@ -224,7 +224,7 @@ function load_skin() {
     include __DIR__ . "/skins/{$my_cms_skin}/skin.php";
 }
 function load_extension($ext) {
-    if (file_exists(include __DIR__ . "/extensions/{$ext}/functions.php")) {
+    if (file_exists(__DIR__ . "/extensions/{$ext}/functions.php")) {
         include __DIR__ . "/extensions/{$ext}/functions.php";
     }
 }
