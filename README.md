@@ -55,11 +55,11 @@ my_cms_header();
 
 CMS соддержит два расширения: comments и blog_api. Comments — добавляет комментарии для блога, blog_api выводит информацию о блоге.
 
-Список одключённых переменных хранится в переменно $my_cms_extensions. Примеры:
+Список подключённых расширений хранится в переменной $my_cms_extensions. Примеры:
 
 ```php
-$my_cms_extensions = ["comments", "blog_api"]; # подключены расширения comments и blog_api.
-$my_cms_extensions = []; # не подключены никаие расширения
+$my_cms_extensions = ["comments", "blog_api"]; # подключены расширения comments и blog_api
+$my_cms_extensions = []; # не подключены никакие расширения
 ```
 
 ## Разработка расширений
