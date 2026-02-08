@@ -81,6 +81,7 @@ function my_cms_content() {
         }
     } elseif ($path_parts[0] === 'create_blog') {
         if ($_SERVER['REQUEST_METHOD'] === "GET") {
+            generate_csrf();
             include __DIR__  . '/create-blog.php';
         } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
             create_blog_page();
@@ -133,7 +134,19 @@ function my_cms_error_404() {
     }
 }
 
+function my_cms_error_419() {
+    http_response_code(419);
+    global $my_cms_skin;
+    if (file_exists(__DIR__ . "/skins/{$my_cms_skin}/419.php")) {
+        include __DIR__ . "/skins/{$my_cms_skin}/419.php";
+    } else {
+        include __DIR__ . "/419.php";
+    }
+    die();
+}
+
 function create_blog_page() {
+    verifying_csrf_token();
     if ( isset($_POST['title'])  && isset($_POST['slug']) && isset($_POST['text']) ) {
             $title = $_POST['title'];
             $slug  = $_POST['slug'];
@@ -244,4 +257,38 @@ function connect_to_db() {
 function close_connection_to_db() {
     global $conn;
     $conn->close();
+}
+
+function generate_csrf() {
+    // Source - https://stackoverflow.com/a/31683058
+    // Posted by Scott Arciszewski, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-02-08, License - CC BY-SA 3.0
+    session_start();
+    if (empty($_SESSION['token'])) {
+        $_SESSION['token'] = bin2hex(random_bytes(32));
+    }
+    global $csrf_token;
+    $csrf_token = $_SESSION['token']; 
+}
+
+function verifying_csrf_token() {
+    session_start();
+    // Source - https://stackoverflow.com/a/31683058
+    // Posted by Scott Arciszewski, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-02-08, License - CC BY-SA 3.0
+    if (!empty($_POST['token'])) {
+        if (hash_equals($_SESSION['token'], $_POST['token'])) {
+            // Proceed to process the form data
+        } else {
+            my_cms_error_419();
+        }
+    } else {
+        my_cms_error_419();
+    }
+    unset($_SESSION['token']);
+}
+
+function get_csrf_form_field() {
+    global $csrf_token;
+    return "<input type=\"hidden\" id=\"token\" name=\"token\" value=\"$csrf_token\">";
 }

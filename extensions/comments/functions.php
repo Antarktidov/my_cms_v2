@@ -15,6 +15,7 @@ function blog_comments($blog_id) {
     $stmt->execute();
     $result = $stmt->get_result();
     echo "<h2>Комментарии:</h2>";
+    generate_csrf();
     include __DIR__ . "/new-comment.php";
     ?><div class="comments"><?php
     // Process the result set
@@ -38,6 +39,7 @@ function blog_comments($blog_id) {
 }
 
 function post_blog_comment() {
+    verifying_csrf_token();
     if ( isset($_POST["comment"]) && isset($_POST["blog_id"]) ) {
         $text = $_POST["comment"];
         $blog_id = $_POST["blog_id"];

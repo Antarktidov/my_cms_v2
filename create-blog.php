@@ -3,6 +3,7 @@ include __DIR__ . "/go_away.php";
 global $wg_path;
 ?>
 <form class="create-blog-form" action="<?=$wg_path . "create_blog";?>" method="post">
+    <?=get_csrf_form_field();?>
     <h1 style="margin-bottom: 0;">Создать блог</h1>
     <label for="title">Название</label>
     <input id="title" name="title">
