@@ -47,7 +47,7 @@ function post_blog_comment() {
         global $conn, $wg_path;
 
         $stmt = $conn->prepare("INSERT INTO comment (text, blog_id) VALUES (?, ?)");
-        $stmt->bind_param("ss", $text, $blog_id);
+        $stmt->bind_param("si", $text, $blog_id);
         $stmt->execute();
         $stmt->close();
 

@@ -1,0 +1,18 @@
+.contact-form {
+    font-size: 20px;
+    width: 50vw;
+    & > * {
+        width: 100%;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    & textarea {
+        margin-top: 0rem;
+        height: 5rem;
+    }
+    & button {
+        font-size: 1rem;
+        padding: 0.4rem;
+    }
+}

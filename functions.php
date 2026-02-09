@@ -66,12 +66,14 @@ function my_cms_content() {
         $path = ltrim($path, '/');
     }
 
+    global $path_parts;
     // Разбиваем путь на части
     $path_parts = $path ? explode('/', $path) : [];
 
     // Простой роутинг
     if (empty($path_parts) || $path_parts[0] === '' || $path_parts[0] === 'home' || $path_parts[0] === 'index.php') {
         my_cms_homepage();
+        exit;
     } elseif ($path_parts[0] === 'blog') {
         if (isset($path_parts[1])) {
             $blog_slug = $path_parts[1];
@@ -79,16 +81,21 @@ function my_cms_content() {
         } else {
             my_cms_blog_page();
         }
+        exit;
     } elseif ($path_parts[0] === 'create_blog') {
         if ($_SERVER['REQUEST_METHOD'] === "GET") {
             generate_csrf();
             include __DIR__  . '/create-blog.php';
         } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
             create_blog_page();
-        } 
-    } else {
-        my_cms_error_404();
+        }
+        exit;
     }
+    global $my_cms_extensions;
+    foreach ($my_cms_extensions as $ext) {
+        load_extension_routes($ext);
+    }
+    my_cms_error_404();
 }
 // Новая функция для отображения конкретного блога
 function my_cms_single_blog($slug) {
@@ -246,6 +253,12 @@ function load_extension_api($ext) {
         include __DIR__ . "/extensions/{$ext}/api.php";
     }
 }
+function load_extension_routes($ext) {
+    if (file_exists(__DIR__ . "/extensions/{$ext}/routes.php")) {
+        include __DIR__ . "/extensions/{$ext}/routes.php";
+    }
+}
+
 function connect_to_db() {
     global $db_host, $db_username, $db_password, $db_name, $conn;
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
@@ -291,4 +304,18 @@ function verifying_csrf_token() {
 function get_csrf_form_field() {
     global $csrf_token;
     return "<input type=\"hidden\" id=\"token\" name=\"token\" value=\"$csrf_token\">";
+}
+
+function get_ip()
+{
+	$value = '';
+	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+		$value = $_SERVER['HTTP_CLIENT_IP'];
+	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		$value = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+		$value = $_SERVER['REMOTE_ADDR'];
+	}
+  
+	return $value;
 }
