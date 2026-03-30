@@ -20,7 +20,7 @@ git clone https://github.com/Antarktidov/my_cms_v2
 
 # Скины
 
-CMS соддержит три скина: example, darky и other-side. Они лежат в папке skins. Чтобы изменить активный скин, изменение переменную $my_cms_skin в localSetting.php. В примере ниже активный скин — "other-side".
+CMS содержит три скина: example, darky и other-side. Они лежат в папке skins. Чтобы изменить активный скин, изменение переменную $my_cms_skin в localSetting.php. В примере ниже активный скин — "other-side".
 
 ```php
 $my_cms_skin = "other-side";
@@ -53,7 +53,7 @@ my_cms_header();
 
 # Расширения
 
-CMS соддержит три расширения: comments, blog_api и contact_page. Comments добавляет комментарии для блога, blog_api выводит информацию о блоге, contact_page добавляет страницу с формой обратной связи.
+CMS содержит три расширения: comments, blog_api и contact_page. Comments добавляет комментарии для блога, blog_api выводит информацию о блоге, contact_page добавляет страницу с формой обратной связи.
 
 Список подключённых расширений хранится в переменной $my_cms_extensions. Примеры:
 
